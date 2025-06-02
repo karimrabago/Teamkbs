@@ -1,0 +1,108 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>TeamKbs - Membresías</title>
+  <style>
+    body {
+      background: white;
+      font-family: Arial, sans-serif;
+      margin: 0;
+    }
+    nav {
+      background: #800020;
+      display: flex;
+      justify-content: center;
+      padding: 10px;
+    }
+    nav button {
+      background: #800020;
+      border: none;
+      color: white;
+      margin: 0 10px;
+      padding: 10px 20px;
+      font-weight: bold;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    nav button.active,
+    nav button:active {
+      background: #4b0011;
+      box-shadow: inset 2px 2px 5px rgba(0,0,0,0.5);
+    }
+    section {
+      display: none;
+      padding: 20px;
+    }
+    section.active {
+      display: block;
+    }
+    .auth, .loggedin {
+      text-align: center;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <button data-target="membresia" class="active">Membresía</button>
+</nav>
+
+<section id="membresia" class="active">
+  <h2 style="text-align:center;">Adquirí tu membresía</h2>
+
+  <div class="auth">
+    <button onclick="signInWithGoogle()">Iniciar sesión con Google</button>
+  </div>
+
+  <div class="loggedin" style="display:none;">
+    <p>Hola <span id="userName"></span> 👋</p>
+    <p>Gracias por iniciar sesión.</p>
+    <button onclick="logout()">Cerrar sesión</button>
+  </div>
+</section>
+
+<!-- FIREBASE SDK -->
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js"></script>
+<script>
+  const firebaseConfig = {
+    apiKey: "AIzaSyCHn8z7KllM1mINfUAXHwuzKAmwdQBMZ7k",
+    authDomain: "teamkbs-test.firebaseapp.com",
+    projectId: "teamkbs-test",
+    storageBucket: "teamkbs-test.appspot.com",
+    messagingSenderId: "152341693890",
+    appId: "1:152341693890:web:f1b4ef9a314dbd53d0f13f"
+  };
+  firebase.initializeApp(firebaseConfig);
+  const auth = firebase.auth();
+
+  function signInWithGoogle() {
+    const provider = new firebase.auth.GoogleAuthProvider();
+    auth.signInWithPopup(provider)
+      .then(result => {
+        const user = result.user;
+        document.querySelector('.auth').style.display = 'none';
+        document.querySelector('.loggedin').style.display = 'block';
+        document.getElementById('userName').innerText = user.displayName;
+      })
+      .catch(error => {
+        alert("Error al iniciar sesión.");
+        console.error(error);
+      });
+  }
+
+  function logout() {
+    auth.signOut().then(() => {
+      document.querySelector('.auth').style.display = 'block';
+      document.querySelector('.loggedin').style.display = 'none';
+    });
+  }
+</script>
+
+</body>
+</html>
